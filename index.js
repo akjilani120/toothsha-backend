@@ -11,11 +11,16 @@ async function run(){
   try{
     await client.connect();
     const collection = client.db("fashion").collection("uniform");
+    const orderCollection = client.db("fashion").collection("order");
     app.get("/fashion" , async(req , res) =>{
       const result = await collection.find().toArray()
       res.send(result)
     })
-
+    app.post("/fashion/order" , async (req , res) =>{
+      const order = req.body
+      const result = await  orderCollection.insertOne(order)
+      res.send(result)
+    })
     
   }finally{}
 }
@@ -24,7 +29,7 @@ app.use(cors())
 app.use(express.json())
 
 app.get('/', (req, res) => {
-  res.send('Vaani tech company')
+  res.send('Toothsho company')
 })
 
 app.listen(port, () => {
