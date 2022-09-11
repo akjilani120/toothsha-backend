@@ -51,7 +51,7 @@ app.use(cors())
 app.use(express.json())
 
 app.get('/', (req, res) => {
-  res.send('Toothsho company')
+  res.send('Toothsho company backend')
 })
 
 app.listen(port, () => {
