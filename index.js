@@ -3,6 +3,9 @@ const app = express()
 const port = process.env.PORT || 5000
 const cors = require("cors")
 require('dotenv').config()
+app.use(cors())
+app.use(express.json())
+
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.bbiqawj.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
@@ -18,7 +21,7 @@ async function run(){
     })
     app.post("/fashion/order" , async (req , res) =>{
       const order = req.body     
-      console.log(order)
+     
       const result = await  orderCollection.insertOne(order )
       res.send(result)
     })
@@ -30,8 +33,7 @@ async function run(){
     const id = req.params.id
     const filter = {_id : ObjectId(id)}
     const options = { upsert: true };
-    const updatedData = req.body
-    console.log(updatedData)
+    const updatedData = req.body    
     const updateDoc = {
       $set: updatedData
     };
@@ -47,9 +49,6 @@ async function run(){
   }finally{}
 }
 run().catch(console.dir);
-app.use(cors())
-app.use(express.json())
-
 app.get('/', (req, res) => {
   res.send('Toothsho company backend')
 })
