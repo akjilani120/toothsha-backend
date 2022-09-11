@@ -3,7 +3,7 @@ const app = express()
 const port = process.env.PORT || 5000
 const cors = require("cors")
 require('dotenv').config()
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.bbiqawj.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
@@ -17,11 +17,33 @@ async function run(){
       res.send(result)
     })
     app.post("/fashion/order" , async (req , res) =>{
-      const order = req.body
-      const result = await  orderCollection.insertOne(order)
+      const order = req.body     
+      console.log(order)
+      const result = await  orderCollection.insertOne(order )
       res.send(result)
     })
-    
+    app.get("/fashion/order" , async(req , res) =>{
+      const result = await orderCollection.find().toArray()
+      res.send(result)
+    })
+    app.put("/fashion/update/:id" , async(req , res) =>{
+    const id = req.params.id
+    const filter = {_id : ObjectId(id)}
+    const options = { upsert: true };
+    const updatedData = req.body
+    console.log(updatedData)
+    const updateDoc = {
+      $set: updatedData
+    };
+    const result = await orderCollection.updateOne(filter, updateDoc, options)
+    res.send(result)
+    })
+    app.delete("/fashion/order/delete/:id" , async(req , res) =>{
+      const id = req.params.id
+    const filter = {_id : ObjectId(id)}
+    const result = await orderCollection.deleteOne(filter)
+    res.send(result)
+    })
   }finally{}
 }
 run().catch(console.dir);
